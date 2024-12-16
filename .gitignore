@@ -6,6 +6,8 @@ __pycache__/
 test123.txt
 uv.lock
 
+.DS_Store
+
 .idea
 
 .vscode
