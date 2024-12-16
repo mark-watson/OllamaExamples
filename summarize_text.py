@@ -19,25 +19,18 @@ def summarize_text(text: str, context: str = "", encoding: str = "utf-8") -> str
         context (str): another tool's output can at the application layer can be used set the context for this tool.
 
     Returns:
-        a string os summarized text
+        a string of summarized text
     """
-    #print(f"\n\n**** summarize input text:\n\n{text}\n\n")
-    prompt0 = "Summarize this text (and be very concise):\n\n"
+    prompt = "Summarize this text (and be concise), returning only the summary with NO OTHER COMMENTS:\n\n"
     if len(text.strip()) < 50:
         text = context
-        print(f"\n* * modified text (context):\n{text}\n")
-    else:
-        if len(context) > 50:
-            prompt0 = "Given this context:\n\n" + context + "\n\n"
-    print(f"\n** summarize_text:\n{text=}\n")
-    print(f"\n** summarize_text:\n{prompt0=}\n")
+    elif len(context) > 50:
+        prompt = f"Given this context:\n\n{context}\n\n" + prompt
+
     summary: ChatResponse = chat(
         model="llama3.2:latest",
         messages=[
-            {
-                "role": "system",
-                "content": prompt0,
-            },
+            {"role": "system", "content": prompt},
             {"role": "user", "content": text},
         ],
     )

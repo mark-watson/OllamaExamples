@@ -33,8 +33,9 @@ def read_file_contents(file_path: str, encoding: str = "utf-8") -> str:
 
 
 def write_file_contents(
-    file_path: str, content: str, encoding: str = "utf-8", mode: str = "w"
-) -> str:
+        file_path: str, content: str,
+        encoding: str = "utf-8",
+        mode: str = "w") -> str:
     """
     Writes content to a file and returns operation status
 
