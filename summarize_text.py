@@ -21,14 +21,16 @@ def summarize_text(text: str, context: str = "", encoding: str = "utf-8") -> str
     Returns:
         a string os summarized text
     """
-    print(f"\n\n**** summarize input text:\n\n{text}\n\n")
-    prompt0 = "You are an expert at summarizing an input string. The only thing you return is the summarized text."
+    #print(f"\n\n**** summarize input text:\n\n{text}\n\n")
+    prompt0 = "Summarize this text (and be very concise):\n\n"
     if len(text.strip()) < 50:
         text = context
         print(f"\n* * modified text (context):\n{text}\n")
     else:
-        if len(context) > 10:
-            prompt0 += "\n" + context
+        if len(context) > 50:
+            prompt0 = "Given this context:\n\n" + context + "\n\n"
+    print(f"\n** summarize_text:\n{text=}\n")
+    print(f"\n** summarize_text:\n{prompt0=}\n")
     summary: ChatResponse = chat(
         model="llama3.2:latest",
         messages=[
@@ -46,7 +48,8 @@ def summarize_text(text: str, context: str = "", encoding: str = "utf-8") -> str
 summarize_text.metadata = {
     "name": "summarize_text",
     "description": "Summarizes input text",
-    "parameters": {"text": "string of text to summarize"},
+    "parameters": {"text": "string of text to summarize",
+                   "context": "optional context string"},
 }
 
 # Export the functions

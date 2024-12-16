@@ -49,6 +49,7 @@ for tool_call in response.message.tool_calls or []:
             tool_call.function.arguments["context"] = memory_context
         print("\n* * tool_call.function.arguments:\n")
         pprint(tool_call.function.arguments)
+        print(f"Arguments for {function_to_call.__name__}: {tool_call.function.arguments}")
         result = function_to_call(**tool_call.function.arguments)  # , memory_context)
         print(f"\n\n** Output of {tool_call.function.name}: {result}")
         memory_context = memory_context + "\n\n" + result
