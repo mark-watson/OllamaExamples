@@ -2,24 +2,21 @@
 Summarize text
 """
 
-from typing import Optional, Dict, Any
-from pathlib import Path
-import json
-
-from ollama import chat
 from ollama import ChatResponse
+from ollama import chat
 
 
-def summarize_text(text: str, context: str = "", encoding: str = "utf-8") -> str:
+def summarize_text(text: str, context: str = "") -> str:
     """
     Summarizes text
 
-    Args:
+    Parameters:
         text (str): text to summarize
         context (str): another tool's output can at the application layer can be used set the context for this tool.
 
     Returns:
         a string of summarized text
+
     """
     prompt = "Summarize this text (and be concise), returning only the summary with NO OTHER COMMENTS:\n\n"
     if len(text.strip()) < 50:

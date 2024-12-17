@@ -28,7 +28,7 @@ def judge_results(original_prompt: str, llm_gen_results: str) -> Dict[str, str]:
     try:
         messages = [
             {"role": "system", "content": "Always judge this output for correctness."},
-            {"role": "user", "content": f"Evaluate this output:\n\n{llm_gen_results}\n\nfor this prompt:\n\n{original_prompt}\n\nAnswer Y or N, followed by your reason. Just judge correctness of the initial output and if the initial output is incorrect don't print the correct solution. Double check your work"},
+            {"role": "user", "content": f"Evaluate this output:\n\n{llm_gen_results}\n\nfor this prompt:\n\n{original_prompt}\n\nDouble check your work. End your output with a Y or N answer"},
         ]
 
         response = client.chat(
@@ -39,11 +39,12 @@ def judge_results(original_prompt: str, llm_gen_results: str) -> Dict[str, str]:
         r = response.message.content.strip()
         print(f"\n\noriginal COT response:\n\n{r}\n\n")
 
-        # next two lines only for marco-o1 chain of thought model:
-        # match = re.search(r'<Output>(.*?)</Output>', r, re.DOTALL)
-        # r = match.group(1).strip() if match else None
+        # look at the end of the response for the Y or N judgement
+        s = r.lower()
+        # remove all non-alphabetic characters:
+        s = re.sub(r'[^a-zA-Z]', '', s).strip()
 
-        return {'judgement': r[0], 'reasoning': r[1:].strip()}
+        return {'judgement': s[-1].upper(), 'reasoning': r[1:].strip()}
 
     except Exception as e:
         print(f"\n\n***** {e=}\n\n")
