@@ -28,7 +28,7 @@ def judge_results(original_prompt: str, llm_gen_results: str) -> Dict[str, str]:
     try:
         messages = [
             {"role": "system", "content": "Always judge this output for correctness."},
-            {"role": "user", "content": f"Evaluate if this output:\n\n{llm_gen_results}\n\nis correct for this prompt:\n\n{original_prompt}\n\nAnswer Y or N, followed by your reason."},
+            {"role": "user", "content": f"Evaluate this output:\n\n{llm_gen_results}\n\nfor this prompt:\n\n{original_prompt}\n\nAnswer Y or N, followed by your reason. Just judge correctness of the initial output and if the initial output is incorrect don't print the correct solution. Double check your work"},
         ]
 
         response = client.chat(
@@ -36,9 +36,6 @@ def judge_results(original_prompt: str, llm_gen_results: str) -> Dict[str, str]:
             messages=messages,
         )
 
-        #print("\nRAW RESPONSE:\n")
-        #pprint(response)
-        #print("\n\n")
         r = response.message.content.strip()
         print(f"\n\noriginal COT response:\n\n{r}\n\n")
 
@@ -50,5 +47,4 @@ def judge_results(original_prompt: str, llm_gen_results: str) -> Dict[str, str]:
 
     except Exception as e:
         print(f"\n\n***** {e=}\n\n")
-        pass
-        #return {'judgement': 'E', 'reasoning': str(e)}  # on any error, assign 'E' result
+        return {'judgement': 'E', 'reasoning': str(e)}  # on any error, assign 'E' result
