@@ -1,6 +1,6 @@
-from file_dir import list_directory
-from file_contents import read_file_contents
-from web_search import uri_to_markdown
+from tool_file_dir import list_directory
+from tool_file_contents import read_file_contents
+from tool_web_search import uri_to_markdown
 
 # print(list_directory())
 # print(read_file_contents('requirements.txt'))
