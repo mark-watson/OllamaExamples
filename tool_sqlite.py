@@ -4,9 +4,9 @@ from typing import Dict, Any, List, Optional
 import ollama
 from functools import wraps
 import re
+import traceback # debug only
 
-
-def create_sample_data(db_name="test.db"):  # Use your database file name
+def create_sample_data(db_name):  # Use your database file name
     """Creates sample data for the example, users, and products tables."""
     try:
         conn = sqlite3.connect(db_name)
@@ -23,37 +23,37 @@ def create_sample_data(db_name="test.db"):  # Use your database file name
 
 
         # Products table
-        cursor.execute("INSERT INTO products (name, price) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Laptop', 1200.00))
-        cursor.execute("INSERT INTO products (name, price) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Keyboard', 75.50))
-
+        cursor.execute("INSERT INTO products (product_name, price) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Laptop', 1200.00))
+        cursor.execute("INSERT INTO products (product_name, price) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Keyboard', 75.50))
 
         conn.commit()
         print("Sample data inserted successfully.")
 
     except sqlite3.Error as e:
+        traceback.print_exc()  # Print the full traceback
         print(f"An error occurred: {e}")
     finally:
         if conn:
             conn.close()
-
 
 class SQLiteTool:
 
     _instance = None  # Keep track of the single instance
 
     def __new__(cls, *args, **kwargs):
+        print("*   __new__ **")
         if not isinstance(cls._instance, cls):
             cls._instance = super(SQLiteTool, cls).__new__(cls, *args, **kwargs)
         return cls._instance  # Return the single instance
 
 
+    def get_cursor(self):
+        conn = sqlite3.connect(self.default_db)
+        return conn.cursor()
+
     def __init__(self, default_db: str = "test.db"):
         print(f"{default_db=}")
-        if not hasattr(self, '_initialized'):  # Check if already initialized
-            super().__init__()  # Call the original init
-            self.default_db = default_db
-            self.connect()  # Connect once
-            create_sample_data(default_db)
+        self.default_db = default_db
         try:  # attempt to create the database if it does not exist
             conn = sqlite3.connect(default_db)
             print(f"{conn=}")
@@ -82,60 +82,47 @@ class SQLiteTool:
             products_table = """
             CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY,
-                name TEXT,
+                product_name TEXT,
                 price REAL
             );
             """
             cursor.execute(products_table)
+            conn.commit()
 
-            create_sample_data(default_db)  # Add this line to populate the tables
+            create_sample_data(self.default_db)  # Add this line to populate the tables
 
             conn.commit()
 
+            # debug:
+            cursor.execute("select * from users;")
+            print(f"{cursor.fetchall()=}")
+            cursor.execute("select * from products;")
+            print(f"{cursor.fetchall()=}")
+
+
         except Exception as e:
+            traceback.print_exc()  # Print the full traceback
             print(e)
+        finally:
+            if conn:
+                conn.close()
 
-        self.default_db = default_db
-        self.current_connection = None
 
-    def connect(self, db_name: Optional[str] = None) -> None:
-        """Connect to SQLite database"""
-        db_to_use = db_name or self.default_db
-        self.current_connection = sqlite3.connect(db_to_use)
-
-    def close(self) -> None:
-        """Close the current database connection"""
-        if self.current_connection:
-            self.current_connection.close()
-            self.current_connection = None
-
-    def ensure_connection(func):
-        """Decorator to ensure database connection exists"""
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            if not self.current_connection:
-                self.connect()
-            return func(self, *args, **kwargs)
-        return wrapper
-
-    @ensure_connection
     def get_tables(self) -> List[str]:
         """Get list of tables in the database"""
-        cursor = self.current_connection.cursor()
+        cursor = self.get_cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         return [table[0] for table in cursor.fetchall()]
 
-    @ensure_connection
     def get_table_schema(self, table_name: str) -> List[tuple]:
         """Get schema for a specific table"""
-        cursor = self.current_connection.cursor()
+        cursor = self.get_cursor()
         cursor.execute(f"PRAGMA table_info({table_name});")
         return cursor.fetchall()
 
-    @ensure_connection
     def execute_query(self, query: str) -> List[tuple]:
         """Execute a SQL query and return results"""
-        cursor = self.current_connection.cursor()
+        cursor = self.get_cursor()
         cursor.execute(query)
         return cursor.fetchall()
 
@@ -217,14 +204,14 @@ Response:"""
         # Execute the appropriate function
         if function_call["function"] == "query_database":
             db_name = function_call["parameters"].get("database")
-            if db_name:
-                self.sqlite_tool.connect(db_name)
+            #if db_name:
+             #   self.sqlite_tool.connect(db_name)
             return self.sqlite_tool.execute_query(function_call["parameters"]["query"])
 
         elif function_call["function"] == "list_tables":
             db_name = function_call["parameters"].get("database")
-            if db_name:
-                self.sqlite_tool.connect(db_name)
+            #if db_name:
+            #    self.sqlite_tool.connect(db_name)
             return self.sqlite_tool.get_tables()
 
         else:
