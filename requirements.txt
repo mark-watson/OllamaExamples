@@ -3,3 +3,4 @@ requests
 beautifulsoup4
 aisuite[ollama]
 ollama
+sqlite3
