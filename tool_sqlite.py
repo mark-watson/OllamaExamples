@@ -5,10 +5,55 @@ import ollama
 from functools import wraps
 import re
 
-# Add comment for creating sqlite table using command line tool
+
+def create_sample_data(db_name="test.db"):  # Use your database file name
+    """Creates sample data for the example, users, and products tables."""
+    try:
+        conn = sqlite3.connect(db_name)
+        cursor = conn.cursor()
+
+        # Example table
+        cursor.execute("INSERT INTO example (name, value) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Example 1', 10.5))
+        cursor.execute("INSERT INTO example (name, value) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Example 2', 25.0))
+
+
+        # Users table
+        cursor.execute("INSERT INTO users (name, email) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Bob', 'bob@example.com'))
+        cursor.execute("INSERT INTO users (name, email) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Susan', 'susan@test.net'))
+
+
+        # Products table
+        cursor.execute("INSERT INTO products (name, price) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Laptop', 1200.00))
+        cursor.execute("INSERT INTO products (name, price) VALUES (?, ?) ON CONFLICT DO NOTHING", ('Keyboard', 75.50))
+
+
+        conn.commit()
+        print("Sample data inserted successfully.")
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+
 class SQLiteTool:
+
+    _instance = None  # Keep track of the single instance
+
+    def __new__(cls, *args, **kwargs):
+        if not isinstance(cls._instance, cls):
+            cls._instance = super(SQLiteTool, cls).__new__(cls, *args, **kwargs)
+        return cls._instance  # Return the single instance
+
+
     def __init__(self, default_db: str = "test.db"):
         print(f"{default_db=}")
+        if not hasattr(self, '_initialized'):  # Check if already initialized
+            super().__init__()  # Call the original init
+            self.default_db = default_db
+            self.connect()  # Connect once
+            create_sample_data(default_db)
         try:  # attempt to create the database if it does not exist
             conn = sqlite3.connect(default_db)
             print(f"{conn=}")
@@ -22,6 +67,29 @@ class SQLiteTool:
              );
              """
             cursor.execute(example_table)
+
+            # CREATE users table
+            users_table = """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                email TEXT UNIQUE
+            );
+            """
+            cursor.execute(users_table)
+
+            # CREATE products table
+            products_table = """
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                price REAL
+            );
+            """
+            cursor.execute(products_table)
+
+            create_sample_data(default_db)  # Add this line to populate the tables
+
             conn.commit()
 
         except Exception as e:
