@@ -6,6 +6,8 @@ __pycache__/
 test123.txt
 uv.lock
 
+test.db
+
 .DS_Store
 
 .idea

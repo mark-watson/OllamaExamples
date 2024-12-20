@@ -5,10 +5,48 @@ import ollama
 from functools import wraps
 import re
 from contextlib import contextmanager
+from textwrap import dedent # for multi-line string literals
 
 class DatabaseError(Exception):
     """Custom exception for database operations"""
     pass
+
+
+def _create_sample_data(cursor):  # Helper function to create sample data
+    """Create sample data for tables"""
+    sample_data = {
+        'example': [
+            ('Example 1', 10.5),
+            ('Example 2', 25.0)
+        ],
+        'users': [
+            ('Bob', 'bob@example.com'),
+            ('Susan', 'susan@test.net')
+        ],
+        'products': [
+            ('Laptop', 1200.00),
+            ('Keyboard', 75.50)
+        ]
+    }
+
+    for table, data in sample_data.items():
+        for record in data:
+            if table == 'example':
+                cursor.execute(
+                    "INSERT INTO example (name, value) VALUES (?, ?) ON CONFLICT DO NOTHING",
+                    record
+                )
+            elif table == 'users':
+                cursor.execute(
+                    "INSERT INTO users (name, email) VALUES (?, ?) ON CONFLICT DO NOTHING",
+                    record
+                )
+            elif table == 'products':
+                cursor.execute(
+                    "INSERT INTO products (product_name, price) VALUES (?, ?) ON CONFLICT DO NOTHING",
+                    record
+                )
+
 
 class SQLiteTool:
     _instance = None
@@ -64,43 +102,8 @@ class SQLiteTool:
             for table_sql in tables.values():
                 cursor.execute(table_sql)
             conn.commit()
-            self._create_sample_data(cursor)
+            _create_sample_data(cursor)
             conn.commit()
-
-    def _create_sample_data(self, cursor):
-        """Create sample data for tables"""
-        sample_data = {
-            'example': [
-                ('Example 1', 10.5),
-                ('Example 2', 25.0)
-            ],
-            'users': [
-                ('Bob', 'bob@example.com'),
-                ('Susan', 'susan@test.net')
-            ],
-            'products': [
-                ('Laptop', 1200.00),
-                ('Keyboard', 75.50)
-            ]
-        }
-
-        for table, data in sample_data.items():
-            for record in data:
-                if table == 'example':
-                    cursor.execute(
-                        "INSERT INTO example (name, value) VALUES (?, ?) ON CONFLICT DO NOTHING",
-                        record
-                    )
-                elif table == 'users':
-                    cursor.execute(
-                        "INSERT INTO users (name, email) VALUES (?, ?) ON CONFLICT DO NOTHING",
-                        record
-                    )
-                elif table == 'products':
-                    cursor.execute(
-                        "INSERT INTO products (product_name, price) VALUES (?, ?) ON CONFLICT DO NOTHING",
-                        record
-                    )
 
     def get_tables(self) -> List[str]:
         """Get list of tables in the database"""
@@ -157,16 +160,19 @@ class OllamaFunctionCaller:
         }
 
     def _generate_prompt(self, user_input: str) -> str:
-        return f"""You are a SQL assistant. Based on the user's request, generate a JSON response that calls the appropriate function.
-Available functions: {json.dumps(self.function_definitions, indent=2)}
+        prompt = dedent(f"""
+            You are a SQL assistant. Based on the user's request, generate a JSON response that calls the appropriate function.
+            Available functions: {json.dumps(self.function_definitions, indent=2)}
 
-User request: {user_input}
+            User request: {user_input}
 
-Respond with a JSON object containing:
-- "function": The function name to call
-- "parameters": The parameters for the function
+            Respond with a JSON object containing:
+            - "function": The function name to call
+            - "parameters": The parameters for the function
 
-Response:"""
+            Response:
+        """).strip()
+        return prompt
 
     def _parse_ollama_response(self, response: str) -> Dict[str, Any]:
         try:
