@@ -1,10 +1,8 @@
 import json
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Iterator
 import ollama
+from ollama import GenerateResponse
 
-import json
-from typing import List, Dict, Optional
-import ollama
 
 def clean_json_response(response: str) -> str:
     """
@@ -22,7 +20,7 @@ def evaluate_llm_conversation(
     model: str = "llama3.1" # older model that is very good at generating JSON
 ) -> Dict[str, any]:
     """
-    Evaluates a chat history using Ollama as the evaluation model.
+    Evaluates a chat history using Ollama to run the evaluation model.
 
     Args:
         chat_history: List of dictionaries containing the conversation
@@ -66,22 +64,22 @@ def evaluate_llm_conversation(
 
     try:
         # Get evaluation from Ollama
-        response = ollama.generate(
+        response: GenerateResponse | Iterator[GenerateResponse] = ollama.generate(
             model=model,
             prompt=evaluation_prompt,
             system="You are an expert AI evaluator. Provide detailed, objective assessments in JSON format."
         )
 
-        response = clean_json_response(response['response'])
+        response_clean: str = clean_json_response(response['response'])
 
         # Parse the response to extract JSON
         try:
-            evaluation_result = json.loads(response)
+            evaluation_result = json.loads(response_clean)
         except json.JSONDecodeError:
             # Fallback if response isn't proper JSON
             evaluation_result = {
                 "error": "Could not parse evaluation as JSON",
-                "raw_response": response['response']
+                "raw_response": response_clean
             }
 
         return evaluation_result
