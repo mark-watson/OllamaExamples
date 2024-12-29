@@ -28,7 +28,7 @@ def judge_results(original_prompt: str, llm_gen_results: str) -> Dict[str, str]:
     try:
         messages = [
             {"role": "system", "content": "Always judge this output for correctness."},
-            {"role": "user", "content": f"Evaluate this output:\n\n{llm_gen_results}\n\nfor this prompt:\n\n{original_prompt}\n\nDouble check your work. End your output with a Y or N answer"},
+            {"role": "user", "content": f"Evaluate this output:\n\n{llm_gen_results}\n\nfor this prompt:\n\n{original_prompt}\n\nDouble check your work and explain your thinking in a few sentences. End your output with a Y or N answer"},
         ]
 
         response = client.chat(
