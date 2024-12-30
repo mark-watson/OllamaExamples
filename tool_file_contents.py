@@ -1,5 +1,4 @@
 """
-File Contents Module
 Provides functions for reading and writing file contents with proper error handling
 """
 
