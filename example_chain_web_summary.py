@@ -1,5 +1,3 @@
-from tool_file_dir import list_directory
-from tool_file_contents import read_file_contents
 from tool_web_search import uri_to_markdown
 from tool_summarize_text import summarize_text
 
@@ -13,8 +11,6 @@ import ollama
 
 # Map function names to function objects
 available_functions = {
-    "list_directory": list_directory,
-    "read_file_contents": read_file_contents,
     "uri_to_markdown": uri_to_markdown,
     "summarize_text": summarize_text,
 }
