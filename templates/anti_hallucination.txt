@@ -6,8 +6,7 @@ Guidelines:
 2. The OUTPUT should not contradict well-established facts or general knowledge.
 3. Ignore the INPUT when evaluating accuracy; it's provided for context only.
 4. Consider partial hallucinations where some information is correct but other parts are not.
-5. Be vigilant for subtle misattributions or conflations of information, even if the date or other details are correct.
-6. Check that the OUTPUT doesn't oversimplify or generalize information in a way that changes its meaning or accuracy.
+5. Check that the OUTPUT doesn't oversimplify or generalize information in a way that changes its meaning or accuracy.
 
 Analyze the text thoroughly and assign a hallucination score between 0 and 1, where:
 - 0.0: The OUTPUT is unfaithful or is incorrect to the CONTEXT and the user's INPUT
