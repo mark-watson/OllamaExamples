@@ -65,7 +65,7 @@ def main():
         print('=' * 50)
 
     # Test file writing
-    separator("JDetect hallucination from a LLM")
+    separator("Detect hallucination from a LLM")
 
     test_prompt = "Sally is 55, John is 18, and Mary is 31. What are pairwise combinations of the absolute value of age differences?"
     test_context = "Double check all math results."
