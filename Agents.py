@@ -4,7 +4,7 @@ from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OllamaEmbeddings
-from crewai import Agent, Task, Crew
+#from crewai import Agent, Task, Crew
 
 class SingleAgent:
     """

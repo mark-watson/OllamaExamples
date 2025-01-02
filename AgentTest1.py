@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import ollama
 from tool_summarize_text import summarize_text
@@ -17,15 +17,17 @@ class LLMAgent:
         self.summarizer = summarize_text
         self.web_searcher = brave_search_text
         self.sqlite_tool = SQLiteTool()
+        self.judge_results = judge_results
+        self.model_name = model_name
 
-    def judge_results(self, prompt: str, response: str) -> Dict[str, str]:
+    def a_judge_results(self, user_prompt: str, response: str) -> Dict[str, str]:
         """
         Uses the provided `judge_results` tool to judge the accuracy
         of the generated response for the prompt.
 
         This function replaces the previous judge_results functionality.
         """
-        return judge_results(prompt, response)
+        return self.judge_results(user_prompt, response)
 
     def search_web(self, query: str) -> str:
         """
@@ -122,7 +124,7 @@ if __name__ == "__main__":
     agent = LLMAgent()
     prompt = "What is the capital of France?"
     results = agent.run(prompt)
-    print(results)
+    print(f"\nresults:\n{results}\n")
 
     # Example with database query (assuming a table named 'capitals')
     prompt = "Find the capital of Germany from the database"

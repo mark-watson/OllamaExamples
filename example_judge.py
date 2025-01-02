@@ -4,7 +4,6 @@ Example script demonstrating the usage of LLM tools
 
 from tool_judge_results import judge_results
 
-import aisuite as ai
 
 
 def separator(title: str):

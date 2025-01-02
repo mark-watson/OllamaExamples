@@ -4,23 +4,26 @@ Provides functions for listing files in the current directory
 """
 
 from typing import Dict, List, Any
+from typing import Optional
 from pathlib import Path
+
 import os
 
 
-def list_directory(pattern: str = "*", list_dots=None) -> Dict[str, Any]:
+def list_directory(list_dots: Optional[bool]=None) -> Dict[str, Any]:
     """
     Lists files and directories in the current working directory
 
     Args:
-        pattern (str): Glob pattern for filtering files (default: "*")
+        list_dots: optional boolean (if true, include dot files)
 
     Returns:
         string with directory name, followed by list of files in the directory
     """
+
     try:
         current_dir = Path.cwd()
-        files = list(current_dir.glob(pattern))
+        files = list(current_dir.glob("*"))
 
         # Convert Path objects to strings and sort
         file_list = sorted([str(f.name) for f in files])
