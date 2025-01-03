@@ -3,3 +3,10 @@ litellm[proxy]
 requests
 beautifulsoup4
 ollama
+langchain
+langchain-community
+langchain-ollama
+rdflib
+kuzu
+langchain_openai
+tabulate
