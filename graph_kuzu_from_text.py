@@ -108,8 +108,10 @@ Now that you have written code to create a sample graph database about
 economics, you can write queries to extract information from the database.
 """
 
-def print_result(result):
+def query_and_print_result(query):
     """Basic pretty printer for Kuzu query results"""
+    print(f"\n* Processing: {query}")
+    result = conn.execute(query)
     if not result:
         print("No results found")
         return
@@ -120,66 +122,59 @@ def print_result(result):
         print(r)
 
 # 1. Find all founders of the Austrian School
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (s:School)-[:FoundedBy]->(e:Economist)
 WHERE s.name = 'Austrian School'
 RETURN e.name
-"""))
+""")
 
 # 2. Find where Pauli Blendergast teaches
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (e:Economist)-[:TeachesAt]->(i:Institution)
 WHERE e.name = 'Pauli Blendergast'
 RETURN i.name, i.type
-"""))
+""")
 
 # 3. Find all economic concepts studied by the Austrian School
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (s:School)-[:Studies]->(c:EconomicConcept)
 WHERE s.name = 'Austrian School'
 RETURN c.name, c.description
-"""))
+""")
 
 # 4. Find all economists and their institutions
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (e:Economist)-[:TeachesAt]->(i:Institution)
 RETURN e.name as Economist, i.name as Institution
-"""))
+""")
 
 # 5. Find schools and count their founders
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (s:School)-[:FoundedBy]->(e:Economist)
 RETURN s.name as School, COUNT(e) as NumberOfFounders
-"""))
+""")
 
 # 6. Find economists who both founded schools and teach at institutions
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (s:School)-[:FoundedBy]->(e:Economist)-[:TeachesAt]->(i:Institution)
 RETURN e.name as Economist, s.name as School, i.name as Institution
-"""))
+""")
 
 # 7. Find economic concepts without any schools studying them
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (c:EconomicConcept)
 WHERE NOT EXISTS {
     MATCH (s:School)-[:Studies]->(c)
 }
 RETURN c.name
-"""))
+""")
 
 # 8. Find economists with no institutional affiliations
-print_result(conn.execute("""
+query_and_print_result("""
 MATCH (e:Economist)
 WHERE NOT EXISTS {
     MATCH (e)-[:TeachesAt]->()
 }
 RETURN e.name
-"""))
+""")
 
-# 9. Find institutions with multiple economists
-print_result(conn.execute("""
-MATCH (e:Economist)-[:TeachesAt]->(i:Institution)
-WITH i, COUNT(e) as numEconomists
-WHERE numEconomists > 1
-RETURN i.name, numEconomists
-"""))

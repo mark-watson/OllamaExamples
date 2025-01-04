@@ -1,5 +1,5 @@
 """
-Wrapper fro book example tools for smloagents compatibility
+Wrapper for book example tools for smloagents compatibility
 """
 
 from smolagents import tool, LiteLLMModel

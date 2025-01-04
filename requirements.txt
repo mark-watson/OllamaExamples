@@ -6,6 +6,7 @@ ollama
 langchain
 langchain-community
 langchain-ollama
+langgraph
 rdflib
 kuzu
 langchain_openai
