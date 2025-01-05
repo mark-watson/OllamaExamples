@@ -40,7 +40,7 @@ tools = [search, answer_from_search]
 agent = create_react_agent(model,
                            tools)
 
-query = "Mark Watson who is an AI Practitioner and Consultant Specializing in Large Language Models, LangChain/Llama-Index Integrations, Deep Learning, and the Semantic Web live? What city does Mark Watson live in?"
+query = "What city does Mark Watson live? Mark Watson who is an AI Practitioner and Consultant Specializing in Large Language Models, LangChain/Llama-Index Integrations, Deep Learning, and the Semantic Web."
 agent_input = {"messages": [
     ("system", """You are a helpful assistant that follows these steps:
 1. First use the 'search' tool to find relevant information
