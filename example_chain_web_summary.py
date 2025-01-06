@@ -17,7 +17,7 @@ available_functions = {
 
 memory_context = ""
 # User prompt
-user_prompt = "Get the text of 'https://knowledgebooks.com' and then summarize the text."
+user_prompt = "Get the text of 'https://knowledgebooks.com' and then summarize the text from this web site."
 
 # Initiate chat with the model
 response = ollama.chat(
