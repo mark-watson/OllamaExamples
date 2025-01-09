@@ -1,5 +1,6 @@
 smolagents
 litellm[proxy]
+accelerate
 requests
 beautifulsoup4
 ollama

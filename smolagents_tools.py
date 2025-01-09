@@ -3,12 +3,14 @@ Wrapper for book example tools for smloagents compatibility
 """
 from pathlib import Path
 
-from smolagents import tool, LiteLLMModel
+from smolagents import tool
 from typing import Optional
 from pprint import pprint
 
 from tool_file_dir import list_directory
+from tool_file_contents import read_file_contents
 
+import ollama
 
 @tool
 def sa_list_directory(list_dots: Optional[bool]=None) -> str:
@@ -26,7 +28,7 @@ def sa_list_directory(list_dots: Optional[bool]=None) -> str:
     return lst
 
 @tool
-def read_file_contents(file_path: str) -> str:
+def sa_read_file_contents(file_path: str) -> str:
     """
     Reads contents from a file and returns the text
 
@@ -49,7 +51,7 @@ def read_file_contents(file_path: str) -> str:
         return f"Error reading file '{file_path}' is: {str(e)}"
 
 @tool
-def summarize_directory() -> str:
+def sa_summarize_directory() -> str:
     """
     Summarizes the files and directories in the current working directory
 
@@ -57,11 +59,18 @@ def summarize_directory() -> str:
         None
 
     Returns:
-        string with directory name, followed by summary of files in the directory
+        string with directory name, followed by summary of files in the directory and by
+        a summary of what the software in the current directory does.
     """
     lst = list_directory()
-    num_files = len(lst)
-    num_dirs = len([x for x in lst if x[1] == 'directory'])
-    num_files = num_files - num_dirs
-    return f"Current directory contains {num_files} files and {num_dirs} directories."
+    print(f"{lst=}")
+    response = ollama.chat(
+        model="llama3.2:latest",
+        messages=[
+            {"role": "system", "content": f"Consider the contents of the current directory: {lst}"},
+            {"role": "user", "content": "Summarize the contents of the current directory. Make an educated guess as to what the major purposes of each file is, given the file name."},
+        ],
+        #tools=[read_file_contents],
+    )
 
+    return f"Summary of directory:{response.message.content}\n"
