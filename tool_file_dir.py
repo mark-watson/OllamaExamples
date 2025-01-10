@@ -10,15 +10,15 @@ from pathlib import Path
 import os
 
 
-def list_directory(list_dots: Optional[bool]=None) -> Dict[str, Any]:
+def list_directory() -> Dict[str, Any]:
     """
     Lists files and directories in the current working directory
 
     Args:
-        list_dots: optional boolean (if true, include dot files)
+        None
 
     Returns:
-        string with directory name, followed by list of files in the directory
+        string containing the current directory name, followed by list of files in the directory
     """
 
     try:
@@ -29,10 +29,9 @@ def list_directory(list_dots: Optional[bool]=None) -> Dict[str, Any]:
         file_list = sorted([str(f.name) for f in files])
 
         file_list = [file for file in file_list if not file.endswith("~")]
-        if not list_dots:
-            file_list = [file for file in file_list if not file.startswith(".")]
+        file_list = [file for file in file_list if not file.startswith(".")]
 
-        return f"Contents of current directory: [{', '.join(file_list)}]"
+        return f"Contents of current directory {current_dir} is: [{', '.join(file_list)}]"
 
     except Exception as e:
         return f"Error listing directory: {str(e)}"
@@ -42,7 +41,7 @@ def list_directory(list_dots: Optional[bool]=None) -> Dict[str, Any]:
 list_directory.metadata = {
     "name": "list_directory",
     "description": "Lists files and directories in the current working directory",
-    "parameters": {"pattern": 'Glob pattern for filtering files (default: "*")'},
+    "parameters": {},
 }
 
 # Export the function

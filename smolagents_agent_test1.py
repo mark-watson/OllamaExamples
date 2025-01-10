@@ -17,7 +17,10 @@ agent = ToolCallingAgent(tools=[sa_list_directory,
                                 sa_summarize_directory,
                                 sa_read_file_contents],
                          model=model,
+                         #planning_interval=2, # enables pre-planning for multiple steps
                          add_base_tools=False) # set to True to use built-in tools
+
+#agent.write_inner_memory_from_logs() # creates an inner memory of the agent's logs for the LLM to view
 
 #print(agent.run("List the Python programs in the current directory, and then tell me which Python programs in the current directory evaluate the performance of LLMs?\n\n"))
 

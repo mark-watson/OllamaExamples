@@ -13,12 +13,12 @@ from tool_file_contents import read_file_contents
 import ollama
 
 @tool
-def sa_list_directory(list_dots: Optional[bool]=None) -> str:
+def sa_list_directory() -> str:
     """
     Lists files and directories in the current working directory
 
     Args:
-        list_dots: optional boolean (if true, include dot files)
+        None
 
     Returns:
         string with directory name, followed by list of files in the directory
