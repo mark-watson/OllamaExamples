@@ -12,3 +12,4 @@ rdflib
 kuzu
 langchain_openai
 tabulate
+kuzu

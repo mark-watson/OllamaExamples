@@ -1,17 +1,12 @@
 # Ollama-book-examples
 Examples for my Ollama LLM AI book https://leanpub.com/ollama
 
-## Ollama chat application: ollama_chat_cmd.py
+Note: smolagents requires Python3.11 (or lower version) so set python version:
 
-Python command line app with arguments:
+```
+$ python3.11 -m venv venv
+pip install -r requirements.txt
+source venv/bin/activate
+```
 
-- none: accept prompt input from stdin
-- any string: use string as prompt
 
-Once first prompt is processed and user shown response, enter a REPL loop with commands:
-
-- Quit/Exit/quit/exit/q/e: exit program
-- Clear/clear: clear chat history
-- any other string: use for next user prompt in chat
-
-Document Python code!
