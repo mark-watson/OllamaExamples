@@ -13,3 +13,4 @@ kuzu
 langchain_openai
 tabulate
 kuzu
+autogen
