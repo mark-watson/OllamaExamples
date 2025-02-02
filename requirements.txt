@@ -13,4 +13,6 @@ kuzu
 langchain_openai
 tabulate
 kuzu
-autogen
+autogen-agentchat
+autogen-ext[ollama]
+
