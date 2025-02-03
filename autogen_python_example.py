@@ -2,8 +2,8 @@ from autogen import AssistantAgent, UserProxyAgent
 
 # Requirements:
 # python3.11 -m venv venv
-# Using the forked version of Autogen on Pypi:
-# pip install autogen==0.7.3 ollama fix_busted_json yfinance matplotlib
+# Using the forked version of Autogen on Pypi: https://github.com/ag2ai/ag2
+# pip install ag2==0.7.3 ollama fix_busted_json yfinance matplotlib
 # source venv/bin/activate
 
 # Define the local model configuration
