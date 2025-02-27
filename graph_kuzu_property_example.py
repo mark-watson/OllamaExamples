@@ -32,6 +32,24 @@ conn.execute(
     "MATCH (p:Person), (m:Movie) WHERE p.name = 'Robert De Niro' AND m.name = 'The Godfather: Part II' CREATE (p)-[:ActedIn]->(m)"
 )
 
+conn.execute("CREATE (:Person {name: 'Marlon Brando', birthDate: '1924-04-03'})")
+conn.execute("CREATE (:Person {name: 'Diane Keaton', birthDate: '1946-01-05'})")
+conn.execute("CREATE (:Movie {name: 'Apocalypse Now'})")
+conn.execute("CREATE (:Movie {name: 'Annie Hall'})")
+
+conn.execute(
+    "MATCH (p:Person), (m:Movie) WHERE p.name = 'Marlon Brando' AND m.name = 'Apocalypse Now' CREATE (p)-[:ActedIn]->(m)"
+)
+conn.execute(
+    "MATCH (p:Person), (m:Movie) WHERE p.name = 'Diane Keaton' AND m.name = 'Annie Hall' CREATE (p)-[:ActedIn]->(m)"
+)
+conn.execute(
+    "MATCH (p:Person), (m:Movie) WHERE p.name = 'Diane Keaton' AND m.name = 'The Godfather: Part II' CREATE (p)-[:ActedIn]->(m)"
+)
+conn.execute(
+    "MATCH (p:Person), (m:Movie) WHERE p.name = 'Al Pacino' AND m.name = 'Apocalypse Now' CREATE (p)-[:ActedIn]->(m)"
+)
+
 graph = KuzuGraph(db, allow_dangerous_requests=True)
 
 # Create a chain
@@ -47,3 +65,5 @@ print(graph.get_schema)
 # Ask two questions
 chain.invoke("Who acted in The Godfather: Part II?")
 chain.invoke("Robert De Niro played in which movies?")
+chain.invoke("Which actors acted in Apocalypse Now?")
+chain.invoke("What movies did Diane Keaton act in?")
