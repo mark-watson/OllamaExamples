@@ -54,7 +54,7 @@ graph = KuzuGraph(db, allow_dangerous_requests=True)
 
 # Create a chain
 chain = KuzuQAChain.from_llm(
-    llm=OllamaLLM(model="qwen2.5-coder:14b"),
+    llm=OllamaLLM(model="qwen2.5:14b"), # "qwen2.5-coder:14b"),
     graph=graph,
     verbose=True,
     allow_dangerous_requests=True,
@@ -67,3 +67,4 @@ chain.invoke("Who acted in The Godfather: Part II?")
 chain.invoke("Robert De Niro played in which movies?")
 chain.invoke("Which actors acted in Apocalypse Now?")
 chain.invoke("What movies did Diane Keaton act in?")
+chain.invoke("Which actors appeared in more than one movie in the database?")
