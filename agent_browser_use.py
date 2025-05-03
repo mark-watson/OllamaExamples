@@ -1,5 +1,7 @@
 ### NOTE: this does not work well (yet) with local models ###
 
+# npx playwright install
+
 from langchain_ollama import ChatOllama
 from browser_use import Agent
 #from pydantic import SecretStr

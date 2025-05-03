@@ -16,3 +16,5 @@ kuzu
 autogen-agentchat
 autogen-ext[ollama]
 
+playwright
+browser_use
