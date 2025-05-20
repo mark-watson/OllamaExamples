@@ -26,7 +26,7 @@ def answer_from_search(original_query: str, search_results: str) -> str:
     ]
 
     response = client.chat(
-        model="llama3.1:latest",  # "llama3.2:latest",
+        model="llama3.1:latest",
         messages=messages,
     )
 

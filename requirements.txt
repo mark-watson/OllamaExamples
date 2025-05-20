@@ -18,3 +18,7 @@ autogen-ext[ollama]
 
 playwright
 browser_use
+
+langgraph
+langchain_community
+duckduckgo-search
